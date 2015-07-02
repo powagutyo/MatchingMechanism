@@ -1,45 +1,36 @@
 package matching;
 
 import object.InitData;
+import object.Problem;
 import object.School;
 
 public class DAMatching extends Matching {
 
-	public DAMatching(InitData data) {
-		super(data);
-
+	public DAMatching() {
 	}
 	@Override
-	public void start() {
-		int step = 1;
-		while (!checkAllStudentAssigned()) {
-			if (m_Data.DEBAG)
-				System.out.println(step + "step目");
-			/*********** 生徒の学校選択 ******************/
-			for (int stuNum : m_MasterList) {
-				if (!m_Student[stuNum].IsAssign()) {
-					int hope = m_Student[stuNum].putHopeInSchool();
-					m_Student[stuNum].assign(hope);
-					m_School[hope].assign(stuNum);
-				}
+	public void studentSelect(Problem pro) {
+		for (int stuNum : pro.getM_MasterList()) {
+			if (!pro.getM_Student()[stuNum].IsAssign()) {
+				int hope = pro.getM_Student()[stuNum].putHopeInSchool();
+				pro.getM_Student()[stuNum].assign(hope);
+				pro.getM_School()[hope].assign(stuNum);
 			}
-			/*********** 学校側の生徒選択 *******************/
-			for(School s : m_School){
-				while(true){
-					if(!s.isExceedRestriction()){
-						break;
-					}
-					int SNum = s.refuse();
-					m_Student[SNum].refused();
-				}
-			}
-			if(m_Data.DEBAG){
-				displayResult();
-			}
-			step++;
 		}
-		System.out.println("マッチング結果は");
-		displayResult();
+		
+	}
+	@Override
+	public void schoolSelect(Problem pro) {
+		for(School s : pro.getM_School()){
+			while(true){
+				if(!s.isExceedRestriction()){
+					break;
+				}
+				int SNum = s.refuse();
+				pro.getM_Student()[SNum].refused();
+			}
+		}
+		
 	}
 
 

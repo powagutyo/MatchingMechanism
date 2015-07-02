@@ -9,7 +9,7 @@ public abstract class Obj {
 	public Obj(int kindSeatNum) {
 		this.m_KindSeat = new int[kindSeatNum];
 		for (int i = 0; i < kindSeatNum; i++) {
-			m_KindSeat[i] = i;
+			m_KindSeat[i] = -1;
 		}
 	}
 	/**
