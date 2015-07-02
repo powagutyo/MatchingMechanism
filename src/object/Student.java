@@ -32,27 +32,6 @@ public class Student extends Obj{
 	public void displayAssign() {
 		System.out.print("所属している学校 : " + m_SchoolLocation );
 	}
-	/**
-	 * 満足度を返すメソッド
-	 */
-	public int getSatisfy(){
-		int size = m_KindSeat.length;
-		for(int i= 0;i< size;i++){
-			if(m_KindSeat[i] == m_SchoolLocation){
-				return i;
-			}
-		}
-		return -1;
-	}
-	/**
-	 * 満足度を返すメソッド
-	 */
-	public boolean isSatisfy(int pos){
-		if(m_KindSeat[pos] == m_SchoolLocation){
-			return true;
-		}
-		return false;
-	}
 
 	/**
 	 * 学校に自分の出したところ以外で希望を出すメソッド
