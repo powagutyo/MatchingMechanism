@@ -6,22 +6,22 @@ import java.util.Comparator;
 
 public class School extends Obj {
 
-	protected int m_UpperLimit; // 上限人数
+	private final int m_Restriction; // 上限人数
 
-	protected final int m_LowerLimit; // 下限人数
+	private final int m_LimittheMinimum; // 下限人数
 
-	protected ArrayList<Student> m_Students;// 生徒群
+	private ArrayList<Integer> m_Students;// 生徒群
 
-	public School(int kindSeatNum, int ul, int ll, int id) {
-		super(kindSeatNum, id);
-		this.m_UpperLimit = ul;
-		this.m_LowerLimit = ll;
-		this.m_Students = new ArrayList<Student>();
+	public School(int kindSeatNum, int restriction, int limittheMinimum) {
+		super(kindSeatNum);
+		this.m_Restriction = restriction;
+		this.m_LimittheMinimum = limittheMinimum;
+		this.m_Students = new ArrayList<Integer>();
 	}
-	
+
 	@Override
-	public void assign(Obj obj) {
-		this.m_Students.add((Student)obj);
+	public void assign(int StudentNum) {
+		addStudents(StudentNum);
 	}
 
 	/**
@@ -29,10 +29,11 @@ public class School extends Obj {
 	 *
 	 * @return 生徒番号
 	 */
-	public Student refuse() {
-		sortKindSeatOrder(m_Students);
-		Student stu  = m_Students.remove(m_Students.size() - 1);
-		return stu;
+	public int refuse() {
+		sortKindSeatOrder();
+		int stuNum = -1;
+		stuNum = m_Students.remove(m_Students.size() - 1);
+		return stuNum;
 	}
 
 	/**
@@ -40,8 +41,8 @@ public class School extends Obj {
 	 *
 	 * @return
 	 */
-	public boolean isRestriction() {
-		if (m_UpperLimit < m_Students.size())
+	public boolean isExceedRestriction() {
+		if (m_Restriction < m_Students.size())
 			return true;
 		return false;
 	}
@@ -49,19 +50,19 @@ public class School extends Obj {
 	@Override
 	public void displayAssign() {
 		System.out.print("所属生徒 : ");
-		for(Student stu :m_Students){
-			System.out.print(stu.getID() + " ");
+		for(int num :m_Students){
+			System.out.print(num + " ");
 		}
 	}
 
 	/**
 	 * m_StudentsをkindSeatの大きい順番でソートを行う
 	 */
-	public void sortKindSeatOrder(ArrayList<Student> obj) {
+	public void sortKindSeatOrder() {
 		// TODO 毎回無名関数を定義してるから自作のソートクラスを作成をした方がいいかも
-		Collections.sort(obj, new Comparator<Obj>() {
+		Collections.sort(m_Students, new Comparator<Integer>() {
 			@Override
-			public int compare(Obj o1, Obj o2) {
+			public int compare(Integer o1, Integer o2) {
 				int seatPoint1 = -1;
 				int seatPoint2 = -1;
 				int size = m_KindSeat.length;
@@ -73,30 +74,28 @@ public class School extends Obj {
 						seatPoint2 = i;
 					}
 				}
-				if (seatPoint2 < seatPoint1){
+				if (seatPoint2 < seatPoint1)
 					return 1;
-				}else{
-					return -1;		
-				}
+				return -1;
 			}
 		});
 	}
-	
-	public int getStudentsSize(){
-		return m_Students.size();
-	}
-	public void setUpperLimit(int upperLimit) {
-		this.m_UpperLimit = upperLimit;
-	}
-	
-	public int getUpperLimit() {
-		return m_UpperLimit;
+
+	/**
+	 * 生徒の番号
+	 *
+	 * @param SNum
+	 */
+	public void addStudents(int SNum) {
+		this.m_Students.add(SNum);
 	}
 
-	public int getLowerLimit() {
-		return m_LowerLimit;
+	public int getM_Restriction() {
+		return m_Restriction;
 	}
 
-	
+	public int getM_LimittheMinimum() {
+		return m_LimittheMinimum;
+	}
 
 }
