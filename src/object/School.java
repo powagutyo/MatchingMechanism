@@ -6,22 +6,24 @@ import java.util.Comparator;
 
 public class School extends Obj {
 
-	private final int m_Restriction; // 上限人数
+	protected int m_UpperLimit; // 上限人数
 
-	private final int m_LimittheMinimum; // 下限人数
+	protected final int m_LowerLimit; // 下限人数
+	
+	protected ArrayList<Student> m_Students;// 生徒群
+	
+	
 
-	private ArrayList<Integer> m_Students;// 生徒群
-
-	public School(int kindSeatNum, int restriction, int limittheMinimum) {
-		super(kindSeatNum);
-		this.m_Restriction = restriction;
-		this.m_LimittheMinimum = limittheMinimum;
-		this.m_Students = new ArrayList<Integer>();
+	public School(int kindSeatNum, int ul, int ll, int id) {
+		super(kindSeatNum, id);
+		this.m_UpperLimit = ul;
+		this.m_LowerLimit = ll;
+		this.m_Students = new ArrayList<Student>();
 	}
 
 	@Override
-	public void assign(int StudentNum) {
-		addStudents(StudentNum);
+	public void assign(Obj obj) {
+		this.m_Students.add((Student) obj);
 	}
 
 	/**
@@ -29,11 +31,16 @@ public class School extends Obj {
 	 *
 	 * @return 生徒番号
 	 */
-	public int refuse() {
-		sortKindSeatOrder();
-		int stuNum = -1;
-		stuNum = m_Students.remove(m_Students.size() - 1);
-		return stuNum;
+	public Student refuse() {
+		sortKindSeatOrder(m_Students);
+		Student stu = null;
+		for (int i = m_Students.size() - 1; i >= 0; i--) {
+			if(!m_Students.get(i).m_AssignmentDecision){
+				stu = m_Students.remove(i);
+				break;
+			}
+		}
+		return stu;
 	}
 
 	/**
@@ -41,28 +48,40 @@ public class School extends Obj {
 	 *
 	 * @return
 	 */
-	public boolean isExceedRestriction() {
-		if (m_Restriction < m_Students.size())
+	public boolean isRestriction() {
+		if (m_UpperLimit < m_Students.size())
 			return true;
 		return false;
 	}
 
 	@Override
 	public void displayAssign() {
-		System.out.print("所属生徒 : ");
-		for(int num :m_Students){
-			System.out.print(num + " ");
+		for (Student stu : m_Students) {
+			System.out.print(stu.getID() + " ");
 		}
+	}
+	/**
+	 * 満足度を返すメソッド
+	 * @return 満足度
+	 */
+	public int getSatisfy(Student stu) {
+		int size = m_KindSeat.length;
+		for (int i = 0; i < size; i++) {
+			if (m_KindSeat[i] == stu) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	/**
 	 * m_StudentsをkindSeatの大きい順番でソートを行う
 	 */
-	public void sortKindSeatOrder() {
+	public void sortKindSeatOrder(ArrayList<Student> obj) {
 		// TODO 毎回無名関数を定義してるから自作のソートクラスを作成をした方がいいかも
-		Collections.sort(m_Students, new Comparator<Integer>() {
+		Collections.sort(obj, new Comparator<Obj>() {
 			@Override
-			public int compare(Integer o1, Integer o2) {
+			public int compare(Obj o1, Obj o2) {
 				int seatPoint1 = -1;
 				int seatPoint2 = -1;
 				int size = m_KindSeat.length;
@@ -74,28 +93,29 @@ public class School extends Obj {
 						seatPoint2 = i;
 					}
 				}
-				if (seatPoint2 < seatPoint1)
+				if (seatPoint2 < seatPoint1) {
 					return 1;
-				return -1;
+				} else {
+					return -1;
+				}
 			}
 		});
 	}
 
-	/**
-	 * 生徒の番号
-	 *
-	 * @param SNum
-	 */
-	public void addStudents(int SNum) {
-		this.m_Students.add(SNum);
+	public int getStudentsSize() {
+		return m_Students.size();
 	}
 
-	public int getM_Restriction() {
-		return m_Restriction;
+	public void setUpperLimit(int upperLimit) {
+		this.m_UpperLimit = upperLimit;
 	}
 
-	public int getM_LimittheMinimum() {
-		return m_LimittheMinimum;
+	public int getUpperLimit() {
+		return m_UpperLimit;
+	}
+
+	public int getLowerLimit() {
+		return m_LowerLimit;
 	}
 
 }
